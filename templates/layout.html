@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    {% block title %}
+    {% if title %}
+        <title>{{ title }} - 花样测试</title>
+    {% else %}
+        <title>花样测试</title>
+    {% endif %}
+    {% endblock %}
+
+    {% block styles %}
+        <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link href="//cdn.bootcss.com/c3/0.4.11/c3.min.css" rel="stylesheet">
+{#    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">#}
+    {% endblock %}
+
+  </head>
+
+<body>
+
+{#{% block body %}#}
+
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar/">Default</a></li>
+            <li class="active"><a href="./">Static top <span class="sr-only">(current)</span></a></li>
+            <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+<div class="container">
+        {% block content %}{% endblock %}
+</div>
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/d3/3.5.17/d3.min.js"></script>
+<script src="//cdn.bootcss.com/c3/0.4.11/c3.min.js"></script>
+<script src="{{ url_for('static', filename='js/c.js') }}"></script>
+    {% block script %}{% endblock %}
+
+{#{% endblock %}#}
+
+</body>
+
+</html>

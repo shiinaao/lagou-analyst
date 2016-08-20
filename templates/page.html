@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1>123</h1>
+{#    <canvas id="city" width="400px" height="400px"></canvas>#}
+    <div id="city"></div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+ plot_pie_chart('{{ url_for('static', filename='data/city.json') }}', '#city');
+
+</script>
+
+{% endblock %}

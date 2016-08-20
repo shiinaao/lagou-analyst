@@ -71,15 +71,16 @@ class KeyWord(object):
 
     def del_redundancy(self):
         table = lagou(self.keyword)
+        all = [i['positionId'] for i in table.find({}, {'_id': 0, 'positionId': 1})]
         result = table.distinct('positionId')
         # print(result)
-        print(len(result))
+        print(result)
         # for i in result:
         #     table.remove({'positionId': i})
         # print('del 0k')
 
     def analyst_all(self):
-        analyst_item = ['city', 'salary', 'jobNature', 'education', 'workYear']
+        analyst_item = ['city.json', 'jobNature', 'education', 'workYear']
         for key in analyst_item:
             data = self.analyst_one(key)
             self.analyst_save(key, data)
