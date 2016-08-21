@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     {% block title %}
     {% if title %}
-        <title>{{ title }} - 花样测试</title>
+        <title>{{ title }} - 就象阳光穿破黑夜</title>
     {% else %}
-        <title>花样测试</title>
+        <title>就象阳光穿破黑夜</title>
     {% endif %}
     {% endblock %}
 
     {% block styles %}
         <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <link href="//cdn.bootcss.com/c3/0.4.11/c3.min.css" rel="stylesheet">
-{#    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">#}
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
     {% endblock %}
 
   </head>
@@ -31,19 +31,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="/">黎明悄悄划过天边</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            </li>
-          </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">Default</a></li>
-            <li class="active"><a href="./">Static top <span class="sr-only">(current)</span></a></li>
-            <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+{#            <li><a href="/about">About</a></li>#}
           </ul>
         </div><!--/.nav-collapse -->
       </div>

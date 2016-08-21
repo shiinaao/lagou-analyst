@@ -3,7 +3,9 @@ import requests
 import json
 import time
 import datetime
-import re
+import pymongo
+import os
+from config import data_config, handle_config
 
 proxies = {'socks': '127.0.0.1:9050'}
 
@@ -24,14 +26,20 @@ class KeyWord(object):
     def tojson(self, data):
         return json.dumps(data)
 
-    def get_page_no(self):
+
+    def get_total_num(self):
         result = self.response2json()
+        self.count = result['content']['positionResult']['totalCount']
+        self.pageSize = result['content']['pageSize']
+        return self.count
+
+    def get_page_no(self):
+        # result = self.response2json()
         # table = mongo('history')
         # table.insert({'name': result['content']['positionResult']['queryAnalysisInfo']['positionName'],
         #               'count': result['content']['positionResult']['totalCount'],
         #               'timestamp': datetime.datetime.utcnow()})
-        self.count = result['content']['positionResult']['totalCount']
-        div = divmod(self.count, result['content']['pageSize'])
+        div = divmod(self.get_total_num(), self.pageSize)
         if div[1] == 0:
             return div[0]
         else:
@@ -53,7 +61,7 @@ class KeyWord(object):
                 else:
                     table.insert(item)
                     add_count += 1
-            time.sleep(2)
+            time.sleep(data_config.download_interval)
         # print('del num', len(id_list))
         table = lagou('history')
         table.insert({'name': self.keyword, 'timestamp': datetime.datetime.utcnow(),
@@ -72,25 +80,41 @@ class KeyWord(object):
     def del_redundancy(self):
         table = lagou(self.keyword)
         all = [i['positionId'] for i in table.find({}, {'_id': 0, 'positionId': 1})]
-        result = table.distinct('positionId')
-        # print(result)
-        print(result)
+        distinct = table.distinct('positionId')
+        for i in distinct:
+            all.remove(i)
+        for i in all:
+            table.delete_one({'positionId': i})
+        print('del redundancy ok, del total: %s' % len(all))
         # for i in result:
         #     table.remove({'positionId': i})
         # print('del 0k')
 
+    def last_update_more_than(self, days=14):
+        table = lagou('history')
+        result = table.find({'name': self.keyword}).sort('timestamp', pymongo.DESCENDING)
+        # return result[1]['timestamp']
+        # print(result.count())
+        if result.count() == 0:
+            return True
+        else:
+            return datetime.datetime.utcnow() - result[0]['timestamp'] > datetime.timedelta(days)
+
     def analyst_all(self):
-        analyst_item = ['city.json', 'jobNature', 'education', 'workYear']
+        analyst_item = ['jobNature', 'education', 'workYear']
         for key in analyst_item:
             data = self.analyst_one(key)
             self.analyst_save(key, data)
-        self.analyst_salary()
+        self.analyst_save('salary', self.analyst_salary())
+        self.analyst_save('city', self.analyst_city())
 
-    def analyst_save(self, file, data):
+    def analyst_save(self, key, data):
         target = analyst(self.keyword)
-        target.insert({'data': data, 'time': datetime.datetime.utcnow()})
+        target.insert({'name': key, 'data': data, 'time': datetime.datetime.today()})
         try:
-            with open('static/data/'+file, 'w') as f:
+            if not os.path.exists('static/data/%s/' % self.keyword):
+                os.mkdir('static/data/%s/' % self.keyword)
+            with open('static/data/%s/%s' % (self.keyword, key), 'w') as f:
                 f.write(self.tojson(data))
         except:
             print('directory permission denied')
@@ -133,4 +157,25 @@ class KeyWord(object):
                 data['26-30k'] += temp_data[item]
             elif 30 < sal:
                 data['30k以上'] += temp_data[item]
-        self.analyst_save('salary', data)
+        return data
+
+    def analyst_city(self):
+        temp_data = self.analyst_one('city')
+        data = {'其他': 0}
+        total = sum(temp_data.values())
+        for city in temp_data.keys():
+            if temp_data[city] / total >= 0.02:
+                data[city] = temp_data[city]
+            else:
+                data['其他'] += temp_data[city]
+        return data
+
+
+def all_job_analyst():
+    table = lagou('history')
+    data = []
+    for job in handle_config.moniter:
+        result = table.find({'name': job}).sort('timestamp', pymongo.DESCENDING)
+        data.append({'text': result[0]['name'], 'size': result[0]['count']})
+    with open('static/data/all_job', 'w') as f:
+        f.write(json.dumps(data))

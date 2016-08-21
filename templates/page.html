@@ -1,15 +1,42 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <h1>123</h1>
-{#    <canvas id="city" width="400px" height="400px"></canvas>#}
-    <div id="city"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2  class="text-center">工作地区分布</h2>
+            <p class="text-center">所占百分比小于2%的归在其他类里</p>
+            <div id="city"></div>
+        </div>
+        <div class="col-sm-12">
+            <h2 class="text-center">薪资水平分布</h2>
+            <p class="text-center">几k-几k: 取平均值, 几k以上: 取最低值</p>
+            <div id="salary"></div>
+        </div>
+        <div class="col-sm-12">
+            <h2 class="text-center">职位类型分布</h2>
+            <div id="jobNature"></div>
+        </div>
+        <div class="col-sm-12">
+            <h2 class="text-center">经验要求分布</h2>
+            <div id="workYear"></div>
+        </div>
+        <div class="col-sm-12">
+            <h2 class="text-center">学历要求分布</h2>
+            <p class="text-center">没学历简直要吃不上饭了</p>
+            <div id="education"></div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
 {% block script %}
 <script>
- plot_pie_chart('{{ url_for('static', filename='data/city.json') }}', '#city');
-
+    plot_pie_chart('/static/data/{{ job }}/city', '#city');
+    plot_pie_chart('/static/data/{{ job }}/salary', '#salary');
+    plot_pie_chart('/static/data/{{ job }}/jobNature', '#jobNature');
+    plot_pie_chart('/static/data/{{ job }}/workYear', '#workYear');
+    plot_pie_chart('/static/data/{{ job }}/education', '#education');
 </script>
 
 {% endblock %}

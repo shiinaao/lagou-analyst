@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <h3 class="text-center">抓取拉钩网数据聚合以图表形式展现</h3>
+        <p class="text-center">
+            受<a href="https://github.com/namco1992/job_analysis">什么值得做项</a>目启发而生, 数据仅供学习交流使用
+        </p>
+    <p class="text-center">数据更新周期为两周</p>
+        <p class="text-center">我已经累了, 前端图表什么的完全折腾不了</p>
+{#        <div class="list-group col-sm-6 col-sm-offset-3">#}
+            {% for i in data %}
+            <h3 class="text-center">
+            <a href="/p/{{ i.text }}">
+                    {{ i.text }}
+            </a>
+            </h3>
+                <p class="text-center">共计 {{ i.count }} 个职位</p>
+            {% endfor %}
+{#        </div>#}
+    </div>
+{% endblock %}
+
