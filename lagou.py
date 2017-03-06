@@ -30,5 +30,5 @@ def page(job):
 
 
 if __name__ == '__main__':
-    # app.config.from_object(config)
+    app.config.from_object(config)
     app.run(host='127.0.0.1', port=4500)
